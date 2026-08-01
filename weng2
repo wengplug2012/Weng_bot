@@ -1,0 +1,50 @@
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+const BOT_NAME = "weng_bot";
+
+// Configuration du client WhatsApp avec sauvegarde de session locale
+const client = new Client({
+    authStrategy: new LocalAuth({ clientId: "weng_bot_session" })
+});
+
+// Affichage du QR Code pour la première connexion
+client.on('qr', (qr) => {
+    console.log(`[${weng_bot}] Scannez ce QR Code pour connecter le bot :`);
+    qrcode.generate(qr, { small: true });
+});
+
+// Confirmation de démarrage
+client.on('ready', () => {
+    console.log(`=== ${weng_bot} est maintenant en ligne et prêt ! ===`);
+});
+
+// Traitement des messages
+client.on('message', async (msg) => {
+    const command = msg.body.toLowerCase().trim();
+
+    // Commandes basiques de weng_bot
+    if (command === '!bot' || command === 'salut' || command === 'hello') {
+        msg.reply(`Bonjour ! Je suis wengbot votre assistant WhatsApp. 🤖\n\nTapez *!menu* pour voir ce que je peux faire.`);
+    } 
+    else if (command === '!ping') {
+        msg.reply('🏓 Pong !');
+    } 
+    else if (command === '!menu' || command === '!aide') {
+        const menuText = `
+📌 *MENU - ${wengbot}* 📌
+
+• *!bot* : Saluer le bot
+• *!ping* : Tester le temps de réponse
+• *!infos* : Obtenir des infos sur le bot
+• *!menu* : Afficher ce message
+        `;
+        msg.reply(menuText);
+    } 
+    else if (command === '!infos') {
+        msg.reply(`ℹ️ *Nom :* ${BOT_NAME}\n⚡ *Statut :* Actif\n🚀 *Version :* 1.0.0`);
+    }
+});
+
+// Lancement de weng_bot
+client.initialize();
