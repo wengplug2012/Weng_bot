@@ -1,0 +1,35 @@
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+// Initialisation du client WhatsApp avec sauvegarde de la session
+const client = new Client({
+    authStrategy: new LocalAuth()
+});
+
+// Génération du QR Code dans le terminal pour se connecter
+client.on('qr', (qr) => {
+    console.log('Scannez ce QR code avec votre téléphone :');
+    qrcode.generate(qr, { small: true });
+});
+
+// Confirmation de la connexion
+client.on('ready', () => {
+    console.log(' Le bot est connecté et prêt à l\'emploi !');
+});
+
+// Gestion des messages reçus
+client.on('message', async (msg) => {
+    const text = msg.body.toLowerCase();
+
+    // Exemple de réponse simple
+    if (text === 'ping') {
+        msg.reply('pong');
+    } else if (text === 'salut' || text === 'bonjour') {
+        msg.reply('Bonjour ! Je suis un bot WhatsApp. Comment puis-je vous aider ?');
+    } else if (text === 'aide') {
+        msg.reply('Commandes disponibles :\n- *salut* : Dire bonjour\n- *ping* : Tester le bot');
+    }
+});
+
+// Lancement du bot
+client.initialize();
